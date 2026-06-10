@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-surface text-on-surface font-body text-body-md antialiased;
+    }
+
+    h1 {
+        @apply font-heading text-h1 text-on-background;
+    }
+
+    h2 {
+        @apply font-heading text-h2 text-on-background;
+    }
+
+    h3 {
+        @apply font-heading text-h3 text-on-background;
+    }
+}
+
+@layer components {
+    .container-app {
+        @apply max-w-app mx-auto px-gutter;
+    }
+
+    .page-shell {
+        @apply py-8 md:py-10;
+    }
+
+    .card {
+        @apply bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden;
+    }
+
+    .card-interactive {
+        @apply card transition-shadow duration-200 hover:shadow-card;
+    }
+
+    .card-body {
+        @apply p-6;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center px-4 py-2.5 rounded bg-primary text-on-primary font-body text-body-md font-semibold transition-all duration-200 hover:bg-primary-container hover:shadow-[0_2px_0_#832600] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center px-4 py-2.5 rounded border-2 border-secondary text-secondary font-body text-body-md font-semibold transition-colors duration-200 hover:bg-secondary hover:text-on-secondary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2;
+    }
+
+    .btn-danger {
+        @apply inline-flex items-center justify-center px-4 py-2.5 rounded bg-error text-on-error font-body text-body-md font-semibold transition-colors duration-200 hover:bg-on-error-container hover:text-on-error focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2;
+    }
+
+    .form-label {
+        @apply block text-label-caps uppercase text-on-surface-variant mb-1.5;
+    }
+
+    .form-input {
+        @apply block w-full rounded bg-surface border border-outline-variant px-4 py-2.5 text-body-md text-on-surface placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors duration-200;
+    }
+
+    .form-select {
+        @apply form-input;
+    }
+
+    .form-error {
+        @apply mt-1 text-body-sm text-error;
+    }
+
+    .chip {
+        @apply inline-flex items-center px-3 py-1 rounded-full text-body-sm font-medium;
+    }
+
+    .chip-success {
+        @apply chip bg-emerald-50 text-emerald-900;
+    }
+
+    .chip-warning {
+        @apply chip bg-amber-50 text-amber-900;
+    }
+
+    .chip-danger {
+        @apply chip bg-red-50 text-red-900;
+    }
+
+    .chip-info {
+        @apply chip bg-blue-50 text-blue-900;
+    }
+
+    .chip-neutral {
+        @apply chip bg-slate-100 text-slate-800;
+    }
+
+    .table-list {
+        @apply min-w-full text-body-sm;
+    }
+
+    .table-list thead {
+        @apply bg-surface-container-low;
+    }
+
+    .table-list th {
+        @apply px-4 py-3 text-left text-label-caps uppercase text-on-surface-variant;
+    }
+
+    .table-list tbody tr:nth-child(even) {
+        @apply bg-slate-50;
+    }
+
+    .table-list tbody tr:hover {
+        @apply bg-surface-container-low;
+    }
+
+    .table-list td {
+        @apply px-4 py-3 text-on-surface;
+    }
+
+    .link-primary {
+        @apply text-primary font-medium hover:underline;
+    }
+
+    .stat-card {
+        @apply card p-5;
+    }
+
+    .stat-label {
+        @apply text-label-caps uppercase text-on-surface-variant;
+    }
+
+    .stat-value {
+        @apply font-heading text-h3 text-on-background mt-1;
+    }
+}
