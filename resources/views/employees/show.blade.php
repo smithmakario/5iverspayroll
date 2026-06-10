@@ -106,10 +106,9 @@
                                     <td class="text-right">
                                         @role(\App\Enums\UserRole::Admin->value)
                                             @unless ($guarantor->isConfirmed())
-                                                <form method="POST" action="{{ route('employees.guarantors.confirm', [$employee, $guarantor]) }}" class="inline" onsubmit="return confirm('Confirm this guarantor?')">
-                                                    @csrf
-                                                    <button class="btn-primary text-body-sm py-2 px-3">Confirm</button>
-                                                </form>
+                                                <a href="{{ route('employees.guarantors.confirm', [$employee, $guarantor]) }}" class="btn-primary text-body-sm py-2 px-3 inline-flex">
+                                                    Confirm
+                                                </a>
                                             @else
                                                 <span class="text-body-sm text-on-surface-variant">By {{ $guarantor->confirmer?->name ?? 'Admin' }}</span>
                                             @endunless

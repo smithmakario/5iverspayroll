@@ -106,8 +106,11 @@ Route::middleware(['auth', 'verified', 'role:'.UserRole::Admin->value])
     });
 
 Route::middleware(['auth', 'verified', 'role:'.UserRole::Admin->value])
-    ->post('employees/{employee}/guarantors/{guarantor}/confirm', [EmployeeGuarantorController::class, 'confirm'])
-    ->name('employees.guarantors.confirm');
+    ->prefix('employees/{employee}/guarantors/{guarantor}')
+    ->group(function () {
+        Route::get('confirm', [EmployeeGuarantorController::class, 'showConfirm'])->name('employees.guarantors.confirm');
+        Route::post('confirm', [EmployeeGuarantorController::class, 'confirm'])->name('employees.guarantors.confirm.store');
+    });
 
 // Bonuses & commissions — Admin only
 Route::middleware(['auth', 'verified', 'role:'.UserRole::Admin->value])

@@ -7,15 +7,31 @@ use App\Models\Employee;
 use App\Models\EmployeeGuarantor;
 use App\Services\PayrollAuditLogger;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class EmployeeGuarantorController extends Controller
 {
+    public function showConfirm(Employee $employee, EmployeeGuarantor $guarantor): View|RedirectResponse
+    {
+        abort_unless($guarantor->employee_id === $employee->id, 404);
+
+        if ($guarantor->isConfirmed()) {
+            return redirect()
+                ->route('employees.show', $employee)
+                ->with('error', 'This guarantor has already been confirmed.');
+        }
+
+        return view('employees.guarantors.confirm', compact('employee', 'guarantor'));
+    }
+
     public function confirm(Employee $employee, EmployeeGuarantor $guarantor): RedirectResponse
     {
         abort_unless($guarantor->employee_id === $employee->id, 404);
 
         if ($guarantor->isConfirmed()) {
-            return back()->with('error', 'This guarantor has already been confirmed.');
+            return redirect()
+                ->route('employees.show', $employee)
+                ->with('error', 'This guarantor has already been confirmed.');
         }
 
         $guarantor->update([
@@ -29,6 +45,8 @@ class EmployeeGuarantorController extends Controller
             'slot' => $guarantor->slot,
         ]);
 
-        return back()->with('success', "Guarantor {$guarantor->slot} ({$guarantor->full_name}) confirmed.");
+        return redirect()
+            ->route('employees.show', $employee)
+            ->with('success', "Guarantor {$guarantor->slot} ({$guarantor->full_name}) confirmed.");
     }
 }
