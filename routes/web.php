@@ -64,6 +64,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('employees/{employee}/earnings/{earning}', [EmployeeEarningController::class, 'destroy'])->name('employees.earnings.destroy');
         });
 
+    // Guarantor confirmation — Admin only
+    Route::middleware('role:'.UserRole::Admin->value)
+        ->group(function () {
+            Route::get('employees/{employee}/guarantors/{guarantor}/confirm', [EmployeeGuarantorController::class, 'showConfirm'])
+                ->name('employees.guarantors.confirm');
+            Route::post('employees/{employee}/guarantors/{guarantor}/confirm', [EmployeeGuarantorController::class, 'confirm'])
+                ->name('employees.guarantors.confirm.store');
+        });
+
     // Pay grades & deduction types — Admin + Accountant
     Route::middleware('role:'.UserRole::Admin->value.'|'.UserRole::Accountant->value)
         ->group(function () {
@@ -103,13 +112,6 @@ Route::middleware(['auth', 'verified', 'role:'.UserRole::Admin->value])
         Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
         Route::get('/pay-period-settings', [PayPeriodSettingController::class, 'edit'])->name('pay-period-settings.edit');
         Route::put('/pay-period-settings', [PayPeriodSettingController::class, 'update'])->name('pay-period-settings.update');
-    });
-
-Route::middleware(['auth', 'verified', 'role:'.UserRole::Admin->value])
-    ->prefix('employees/{employee}/guarantors/{guarantor}')
-    ->group(function () {
-        Route::get('confirm', [EmployeeGuarantorController::class, 'showConfirm'])->name('employees.guarantors.confirm');
-        Route::post('confirm', [EmployeeGuarantorController::class, 'confirm'])->name('employees.guarantors.confirm.store');
     });
 
 // Bonuses & commissions — Admin only

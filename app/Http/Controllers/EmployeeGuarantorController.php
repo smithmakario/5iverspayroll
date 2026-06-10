@@ -13,8 +13,6 @@ class EmployeeGuarantorController extends Controller
 {
     public function showConfirm(Employee $employee, EmployeeGuarantor $guarantor): View|RedirectResponse
     {
-        abort_unless($guarantor->employee_id === $employee->id, 404);
-
         if ($guarantor->isConfirmed()) {
             return redirect()
                 ->route('employees.show', $employee)
@@ -26,8 +24,6 @@ class EmployeeGuarantorController extends Controller
 
     public function confirm(Employee $employee, EmployeeGuarantor $guarantor): RedirectResponse
     {
-        abort_unless($guarantor->employee_id === $employee->id, 404);
-
         if ($guarantor->isConfirmed()) {
             return redirect()
                 ->route('employees.show', $employee)
