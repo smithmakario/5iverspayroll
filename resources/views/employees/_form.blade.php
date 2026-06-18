@@ -51,6 +51,15 @@
         </select>
     </div>
     <div>
+        <label class="form-label" for="location_id">Location</label>
+        <select name="location_id" id="location_id" class="form-select">
+            <option value="">— Select —</option>
+            @foreach ($locations as $location)
+                <option value="{{ $location->id }}" {{ old('location_id', $employee?->location_id) == $location->id ? 'selected' : '' }}>{{ $location->name }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div>
         <label class="form-label" for="pay_grade_id">Pay Grade</label>
         <select name="pay_grade_id" id="pay_grade_id" class="form-select">
             <option value="">— Select —</option>
@@ -65,6 +74,12 @@
         <label class="form-label" for="hire_date">Hire Date *</label>
         <input type="date" name="hire_date" id="hire_date" value="{{ old('hire_date', $employee?->hire_date?->format('Y-m-d')) }}" class="form-input" required>
         @error('hire_date') <p class="form-error">{{ $message }}</p> @enderror
+    </div>
+    <div>
+        <label class="form-label" for="termination_date">Termination Date</label>
+        <input type="date" name="termination_date" id="termination_date" value="{{ old('termination_date', $employee?->termination_date?->format('Y-m-d')) }}" class="form-input">
+        <p class="mt-1 text-body-sm text-on-surface-variant">Set for mid-month leavers. Salary will be prorated for this period.</p>
+        @error('termination_date') <p class="form-error">{{ $message }}</p> @enderror
     </div>
     <div>
         <label class="form-label" for="employment_status">Employment Status *</label>

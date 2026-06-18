@@ -7,6 +7,7 @@ use App\Http\Controllers\DeductionTypeController;
 use App\Http\Controllers\EarningTypeController;
 use App\Http\Controllers\EmployeeEarningController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeDeductionController;
 use App\Http\Controllers\EmployeeGuarantorController;
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('employees', EmployeeController::class);
             Route::post('employees/{employee}/resend-onboarding', [EmployeeController::class, 'resendOnboarding'])->name('employees.resend-onboarding');
             Route::resource('departments', DepartmentController::class);
+            Route::resource('locations', LocationController::class);
             Route::get('employees/{employee}/deductions', [EmployeeDeductionController::class, 'index'])->name('employees.deductions.index');
             Route::post('employees/{employee}/deductions', [EmployeeDeductionController::class, 'store'])->name('employees.deductions.store');
             Route::delete('employees/{employee}/deductions/{deduction}', [EmployeeDeductionController::class, 'destroy'])->name('employees.deductions.destroy');
@@ -95,7 +97,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->group(function () {
             Route::resource('payroll-runs', PayrollRunController::class)->except(['edit', 'update', 'destroy']);
             Route::post('payroll-runs/{payrollRun}/approve', [PayrollRunController::class, 'approve'])->name('payroll-runs.approve');
+            Route::get('payroll-runs/{payrollRun}/preview', [PayrollRunController::class, 'preview'])->name('payroll-runs.preview');
+            Route::get('payroll-runs/{payrollRun}/preview/{employee}', [PayrollRunController::class, 'previewEmployee'])->name('payroll-runs.preview-employee');
             Route::post('payroll-runs/{payrollRun}/process', [PayrollRunController::class, 'process'])->name('payroll-runs.process');
+            Route::post('payroll-runs/{payrollRun}/reprocess', [PayrollRunController::class, 'reprocess'])->name('payroll-runs.reprocess');
             Route::post('payroll-runs/{payrollRun}/lock', [PayrollRunController::class, 'lock'])->name('payroll-runs.lock');
         });
 

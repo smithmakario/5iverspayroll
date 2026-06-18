@@ -4,25 +4,26 @@
         <div class="container-app max-w-2xl">
             <x-flash-messages />
 
-            @if ($activeEmployeeCount === 0)
+            @if ($eligibleEmployeeCount === 0)
                 <div class="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-body-sm text-amber-900">
-                    No active employees found. Payroll cannot be processed until at least one employee is active.
+                    No eligible employees found for the default pay period. Payroll cannot be processed until at least one employee is eligible.
                 </div>
             @else
                 <div class="mb-4 rounded-lg border border-primary/20 bg-primary-container/30 p-4 text-body-sm text-on-surface">
-                    <strong>{{ $activeEmployeeCount }}</strong> active {{ Str::plural('employee', $activeEmployeeCount) }} will be included when payroll is processed.
+                    <strong>{{ $eligibleEmployeeCount }}</strong> eligible {{ Str::plural('employee', $eligibleEmployeeCount) }} for this period (includes active staff and terminated leavers within the period).
                 </div>
             @endif
 
             <div class="card card-body">
-                <x-page-header title="Create Payroll Run" subtitle="Set the pay period, then run payroll or save as a draft for review" />
+                <x-page-header title="Create Payroll Run" subtitle="Set the pay period, then preview calculations before processing" />
 
                 <div class="mb-6 rounded-lg border border-outline-variant bg-surface-container-low p-4 text-body-sm text-on-surface-variant">
                     <p class="font-medium text-on-surface">How payroll runs work</p>
                     <ol class="mt-2 list-decimal space-y-1 pl-5">
                         <li>Create the run with the pay period dates.</li>
-                        <li>Approve the run (or check <strong>Run payroll immediately</strong> below).</li>
-                        <li>Process payroll to generate payslips for all active employees.</li>
+                        <li>Approve the run (or check <strong>Approve immediately</strong> below).</li>
+                        <li>Preview calculated amounts for each employee.</li>
+                        <li>Process all or selected employees, then lock when satisfied.</li>
                     </ol>
                 </div>
 
@@ -63,18 +64,16 @@
                             id="process_now"
                             value="1"
                             class="mt-1 rounded border-outline text-primary focus:ring-primary"
-                            @checked(old('process_now', true))
-                            @disabled($activeEmployeeCount === 0)
+                            @checked(old('process_now', false))
+                            @disabled($eligibleEmployeeCount === 0)
                         >
                         <label for="process_now" class="text-body-sm">
-                            <span class="font-medium text-on-surface">Run payroll immediately</span>
-                            <span class="mt-1 block text-on-surface-variant">Approve and process this run now, generating payslips for all active employees.</span>
+                            <span class="font-medium text-on-surface">Approve immediately</span>
+                            <span class="mt-1 block text-on-surface-variant">Skip to the preview screen after creating the run (does not process payslips yet).</span>
                         </label>
                     </div>
                     <div class="flex gap-3">
-                        <button type="submit" class="btn-primary">
-                            {{ old('process_now', true) ? 'Create & Run Payroll' : 'Create Run' }}
-                        </button>
+                        <button type="submit" class="btn-primary">Create Run</button>
                         <a href="{{ route('payroll-runs.index') }}" class="btn-secondary">Cancel</a>
                     </div>
                 </form>

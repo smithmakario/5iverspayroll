@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EmploymentStatus;
+use App\Enums\EmploymentType;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Location;
 use App\Models\PayGrade;
 use App\Services\EmployeeNumberGenerator;
 use App\Services\EmployeeProvisioningService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Throwable;
@@ -21,21 +25,60 @@ class EmployeeController extends Controller
         private EmployeeNumberGenerator $employeeNumbers,
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $employees = Employee::with(['department', 'payGrade', 'user'])
-            ->orderBy('last_name')
-            ->paginate(20);
+        $query = Employee::with(['department', 'location', 'payGrade', 'user'])
+            ->orderBy('last_name');
 
-        return view('employees.index', compact('employees'));
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->department_id);
+        }
+
+        if ($request->filled('location_id')) {
+            $query->where('location_id', $request->location_id);
+        }
+
+        if ($request->filled('employment_type')) {
+            $query->where('employment_type', $request->employment_type);
+        }
+
+        if ($request->filled('employment_status')) {
+            $query->where('employment_status', $request->employment_status);
+        }
+
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('employee_number', 'like', "%{$search}%");
+            });
+        }
+
+        $employees = $query->paginate(20)->withQueryString();
+
+        $departments = Department::where('is_active', true)->orderBy('name')->get();
+        $locations = Location::where('is_active', true)->orderBy('name')->get();
+        $employmentTypes = EmploymentType::cases();
+        $employmentStatuses = EmploymentStatus::cases();
+
+        return view('employees.index', compact(
+            'employees',
+            'departments',
+            'locations',
+            'employmentTypes',
+            'employmentStatuses',
+        ));
     }
 
     public function create(): View
     {
         $departments = Department::where('is_active', true)->orderBy('name')->get();
+        $locations   = Location::where('is_active', true)->orderBy('name')->get();
         $payGrades   = PayGrade::where('is_active', true)->orderBy('name')->get();
 
-        return view('employees.create', compact('departments', 'payGrades'));
+        return view('employees.create', compact('departments', 'locations', 'payGrades'));
     }
 
     public function store(StoreEmployeeRequest $request): RedirectResponse
@@ -63,7 +106,7 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee): View
     {
-        $employee->load(['department', 'payGrade', 'deductions.deductionType', 'earnings.earningType', 'guarantors.confirmer', 'user']);
+        $employee->load(['department', 'location', 'payGrade', 'deductions.deductionType', 'earnings.earningType', 'guarantors.confirmer', 'user']);
 
         return view('employees.show', compact('employee'));
     }
@@ -71,9 +114,10 @@ class EmployeeController extends Controller
     public function edit(Employee $employee): View
     {
         $departments = Department::where('is_active', true)->orderBy('name')->get();
+        $locations   = Location::where('is_active', true)->orderBy('name')->get();
         $payGrades   = PayGrade::where('is_active', true)->orderBy('name')->get();
 
-        return view('employees.edit', compact('employee', 'departments', 'payGrades'));
+        return view('employees.edit', compact('employee', 'departments', 'locations', 'payGrades'));
     }
 
     public function update(UpdateEmployeeRequest $request, Employee $employee): RedirectResponse

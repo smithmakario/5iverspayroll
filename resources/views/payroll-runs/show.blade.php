@@ -19,16 +19,22 @@
                             <button class="btn-secondary">Approve for Processing</button>
                         </form>
                     @endif
-                    @if ($payrollRun->status->value === 'draft' && $payrollRun->is_approved)
-                        <form method="POST" action="{{ route('payroll-runs.process', $payrollRun) }}" onsubmit="return confirm('Process payroll for all active employees?')">
-                            @csrf
-                            <button class="btn-primary">Process Payroll</button>
-                        </form>
+                    @if ($payrollRun->status->value !== 'locked' && ($payrollRun->is_approved || $payrollRun->status->value === 'completed'))
+                        <a href="{{ route('payroll-runs.preview', $payrollRun) }}" class="btn-secondary">
+                            {{ $payrollRun->payslips->isEmpty() ? 'Preview Payroll' : 'Preview / Process More' }}
+                        </a>
+                    @endif
+                    @if ($payrollRun->status->value === 'draft' && $payrollRun->is_approved && $payrollRun->payslips->isEmpty())
+                        <a href="{{ route('payroll-runs.preview', $payrollRun) }}" class="btn-primary">Preview & Process</a>
                     @endif
                     @if ($payrollRun->status->value === 'completed')
+                        <form method="POST" action="{{ route('payroll-runs.reprocess', $payrollRun) }}" onsubmit="return confirm('Delete all payslips and return to preview? You will need to process again.')">
+                            @csrf
+                            <button class="btn-secondary">Reprocess Run</button>
+                        </form>
                         <form method="POST" action="{{ route('payroll-runs.lock', $payrollRun) }}" onsubmit="return confirm('Lock this run permanently?')">
                             @csrf
-                            <button class="btn-secondary">Lock Run</button>
+                            <button class="btn-primary">Lock Run</button>
                         </form>
                     @endif
                     <a href="{{ route('payroll-runs.index') }}" class="btn-secondary">Back</a>
@@ -38,10 +44,17 @@
             @if ($payrollRun->status->value === 'draft' && $payrollRun->payslips->isEmpty())
                 <div class="rounded-lg border border-primary/20 bg-primary-container/30 p-4 text-body-sm text-on-surface">
                     @if (! $payrollRun->is_approved)
-                        <strong>Next step:</strong> Click <strong>Approve for Processing</strong>, then <strong>Process Payroll</strong> to generate payslips.
+                        <strong>Next step:</strong> Click <strong>Approve for Processing</strong>, then use <strong>Preview Payroll</strong> to review amounts before committing.
                     @else
-                        <strong>Ready to process:</strong> Click <strong>Process Payroll</strong> to generate payslips for all active employees.
+                        <strong>Ready to preview:</strong> Click <strong>Preview & Process</strong> to review calculated amounts for each employee before generating payslips.
                     @endif
+                </div>
+            @endif
+
+            @if ($payrollRun->status->value === 'completed' && $pendingEmployees->isNotEmpty())
+                <div class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-body-sm text-amber-900">
+                    <strong>{{ $pendingEmployees->count() }}</strong> eligible {{ Str::plural('employee', $pendingEmployees->count()) }} not yet included in this run.
+                    Use <strong>Preview / Process More</strong> to add individual employees (e.g. mid-month leavers).
                 </div>
             @endif
 
@@ -66,7 +79,12 @@
                                     <td class="text-right text-error">{{ number_format($payslip->total_tax, 2) }}</td>
                                     <td class="text-right text-error">{{ number_format($payslip->total_deductions, 2) }}</td>
                                     <td class="text-right font-semibold text-primary">{{ number_format($payslip->net_pay, 2) }}</td>
-                                    <td class="text-right"><a href="{{ route('payslips.show', $payslip) }}" class="link-primary">View</a></td>
+                                    <td class="text-right">
+                                        <a href="{{ route('payslips.show', $payslip) }}" class="link-primary">View</a>
+                                        @if ($payrollRun->status->value !== 'locked')
+                                            <a href="{{ route('payroll-runs.preview-employee', [$payrollRun, $payslip->employee]) }}" class="link-primary ml-2">Recalculate</a>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -84,7 +102,7 @@
                 </div>
             @else
                 <div class="card card-body text-center text-on-surface-variant py-12">
-                    No payslips yet. Approve this run, then click <strong>Process Payroll</strong>.
+                    No payslips yet. Approve this run and use <strong>Preview Payroll</strong> to review before processing.
                 </div>
             @endif
         </div>

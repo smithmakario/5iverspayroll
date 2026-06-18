@@ -8,6 +8,7 @@ use App\Enums\EarningCategory;
 use App\Models\DeductionType;
 use App\Models\EarningType;
 use App\Models\Department;
+use App\Models\Location;
 use App\Models\PayGrade;
 use Illuminate\Database\Seeder;
 
@@ -23,6 +24,16 @@ class PayrollFoundationSeeder extends Seeder
         Department::firstOrCreate(
             ['code' => 'FIN'],
             ['name' => 'Finance', 'description' => 'Accounting and finance']
+        );
+
+        Location::firstOrCreate(
+            ['code' => 'HQ'],
+            ['name' => 'Head Office', 'description' => 'Main headquarters']
+        );
+
+        Location::firstOrCreate(
+            ['code' => 'LAG'],
+            ['name' => 'Lagos Branch', 'description' => 'Lagos office']
         );
 
         PayGrade::firstOrCreate(

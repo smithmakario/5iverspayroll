@@ -45,12 +45,16 @@
                     <h3 class="font-heading text-h3 border-b border-outline-variant pb-2">Employment</h3>
                     <dl class="space-y-2 text-body-md">
                         <div class="flex justify-between"><dt class="text-on-surface-variant">Department</dt><dd class="font-medium">{{ $employee->department?->name ?? '—' }}</dd></div>
+                        <div class="flex justify-between"><dt class="text-on-surface-variant">Location</dt><dd class="font-medium">{{ $employee->location?->name ?? '—' }}</dd></div>
                         <div class="flex justify-between"><dt class="text-on-surface-variant">Pay Grade</dt><dd>{{ $employee->payGrade?->name ?? '—' }}</dd></div>
                         <div class="flex justify-between"><dt class="text-on-surface-variant">Employment Type</dt><dd><x-status-badge :status="$employee->employment_type ?? 'full_time'" /></dd></div>
                         <div class="flex justify-between"><dt class="text-on-surface-variant">Compensation</dt><dd><x-status-badge :status="$employee->compensation_type ?? 'salary'" /></dd></div>
                         <div class="flex justify-between"><dt class="text-on-surface-variant">Base Salary</dt><dd>{{ $employee->base_salary ? number_format($employee->base_salary, 2) : ($employee->payGrade ? number_format($employee->payGrade->base_salary, 2) : '—') }}</dd></div>
                         <div class="flex justify-between"><dt class="text-on-surface-variant">Hourly Rate</dt><dd>{{ $employee->hourly_rate ? number_format($employee->hourly_rate, 2) : '—' }}</dd></div>
                         <div class="flex justify-between"><dt class="text-on-surface-variant">Hire Date</dt><dd>{{ $employee->hire_date->format('d M Y') }}</dd></div>
+                        @if ($employee->termination_date)
+                            <div class="flex justify-between"><dt class="text-on-surface-variant">Termination Date</dt><dd>{{ $employee->termination_date->format('d M Y') }}</dd></div>
+                        @endif
                         <div class="flex justify-between"><dt class="text-on-surface-variant">Status</dt><dd><x-status-badge :status="$employee->employment_status" /></dd></div>
                         <div class="flex justify-between"><dt class="text-on-surface-variant">PTO Balance</dt><dd>{{ number_format($employee->pto_balance ?? 0, 1) }} days</dd></div>
                     </dl>

@@ -18,20 +18,47 @@
                     @endrole
 
                     @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::HrManager->value)
-                        <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">Employees</x-nav-link>
-                        <x-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.*')">Departments</x-nav-link>
-                        <x-nav-link :href="route('attendance.index')" :active="request()->routeIs('attendance.*')">Attendance</x-nav-link>
-                        <x-nav-link :href="route('leave-requests.index')" :active="request()->routeIs('leave-requests.*')">Leave</x-nav-link>
+                        <x-nav-dropdown
+                            label="Organization"
+                            :active="request()->routeIs('departments.*', 'locations.*', 'employees.*')"
+                        >
+                            <x-nav-dropdown-link :href="route('departments.index')">Departments</x-nav-dropdown-link>
+                            <x-nav-dropdown-link :href="route('locations.index')">Locations</x-nav-dropdown-link>
+                            <x-nav-dropdown-link :href="route('employees.index')">Employees</x-nav-dropdown-link>
+                        </x-nav-dropdown>
+                    @endhasanyrole
+
+                    @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::HrManager->value.'|'.\App\Enums\UserRole::Accountant->value)
+                        <x-nav-dropdown
+                            label="Workforce"
+                            :active="request()->routeIs('attendance.*', 'pay-grades.*', 'leave-requests.*')"
+                        >
+                            @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::HrManager->value)
+                                <x-nav-dropdown-link :href="route('attendance.index')">Attendance</x-nav-dropdown-link>
+                            @endhasanyrole
+                            @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::Accountant->value)
+                                <x-nav-dropdown-link :href="route('pay-grades.index')">Pay Grades</x-nav-dropdown-link>
+                            @endhasanyrole
+                            @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::HrManager->value)
+                                <x-nav-dropdown-link :href="route('leave-requests.index')">Leave</x-nav-dropdown-link>
+                            @endhasanyrole
+                        </x-nav-dropdown>
                     @endhasanyrole
 
                     @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::Accountant->value)
-                        <x-nav-link :href="route('pay-grades.index')" :active="request()->routeIs('pay-grades.*')">Pay Grades</x-nav-link>
-                        <x-nav-link :href="route('deduction-types.index')" :active="request()->routeIs('deduction-types.*')">Deductions</x-nav-link>
-                        <x-nav-link :href="route('payroll-runs.index')" :active="request()->routeIs('payroll-runs.*')">Payroll</x-nav-link>
+                        <x-nav-dropdown
+                            label="Payroll"
+                            :active="request()->routeIs('payroll-runs.*', 'deduction-types.*', 'earning-types.*')"
+                        >
+                            <x-nav-dropdown-link :href="route('payroll-runs.index')">Payroll</x-nav-dropdown-link>
+                            <x-nav-dropdown-link :href="route('deduction-types.index')">Deductions</x-nav-dropdown-link>
+                            @role(\App\Enums\UserRole::Admin->value)
+                                <x-nav-dropdown-link :href="route('earning-types.index')">Bonuses</x-nav-dropdown-link>
+                            @endrole
+                        </x-nav-dropdown>
                     @endhasanyrole
 
                     @role(\App\Enums\UserRole::Admin->value)
-                        <x-nav-link :href="route('earning-types.index')" :active="request()->routeIs('earning-types.*')">Bonuses</x-nav-link>
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">Admin</x-nav-link>
                     @endrole
                 </div>
@@ -83,18 +110,32 @@
                 <x-responsive-nav-link :href="route('ess.profile')" :active="request()->routeIs('ess.profile', 'ess.profile.*')">My Profile</x-responsive-nav-link>
             @endrole
             @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::HrManager->value)
-                <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">Employees</x-responsive-nav-link>
+                <div class="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Organization</div>
                 <x-responsive-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.*')">Departments</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('attendance.index')" :active="request()->routeIs('attendance.*')">Attendance</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('leave-requests.index')" :active="request()->routeIs('leave-requests.*')">Leave</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('locations.index')" :active="request()->routeIs('locations.*')">Locations</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">Employees</x-responsive-nav-link>
+            @endhasanyrole
+            @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::HrManager->value.'|'.\App\Enums\UserRole::Accountant->value)
+                <div class="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Workforce</div>
+                @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::HrManager->value)
+                    <x-responsive-nav-link :href="route('attendance.index')" :active="request()->routeIs('attendance.*')">Attendance</x-responsive-nav-link>
+                @endhasanyrole
+                @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::Accountant->value)
+                    <x-responsive-nav-link :href="route('pay-grades.index')" :active="request()->routeIs('pay-grades.*')">Pay Grades</x-responsive-nav-link>
+                @endhasanyrole
+                @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::HrManager->value)
+                    <x-responsive-nav-link :href="route('leave-requests.index')" :active="request()->routeIs('leave-requests.*')">Leave</x-responsive-nav-link>
+                @endhasanyrole
             @endhasanyrole
             @hasanyrole(\App\Enums\UserRole::Admin->value.'|'.\App\Enums\UserRole::Accountant->value)
-                <x-responsive-nav-link :href="route('pay-grades.index')" :active="request()->routeIs('pay-grades.*')">Pay Grades</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('deduction-types.index')" :active="request()->routeIs('deduction-types.*')">Deductions</x-responsive-nav-link>
+                <div class="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Payroll</div>
                 <x-responsive-nav-link :href="route('payroll-runs.index')" :active="request()->routeIs('payroll-runs.*')">Payroll</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('deduction-types.index')" :active="request()->routeIs('deduction-types.*')">Deductions</x-responsive-nav-link>
+                @role(\App\Enums\UserRole::Admin->value)
+                    <x-responsive-nav-link :href="route('earning-types.index')" :active="request()->routeIs('earning-types.*')">Bonuses</x-responsive-nav-link>
+                @endrole
             @endhasanyrole
             @role(\App\Enums\UserRole::Admin->value)
-                <x-responsive-nav-link :href="route('earning-types.index')" :active="request()->routeIs('earning-types.*')">Bonuses</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">Admin</x-responsive-nav-link>
             @endrole
         </div>

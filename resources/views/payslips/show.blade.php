@@ -5,7 +5,8 @@
             <div class="card card-body print:shadow-none print:border-0" id="payslip">
                 <div class="flex justify-between items-start mb-6 border-b border-outline-variant pb-6">
                     <div>
-                        <h1 class="font-heading text-h3 text-primary">5ivers Payroll</h1>
+                        <img src="{{ asset('asset/logo/logo.png') }}" alt="5ivers Logo" class="w-10 h-10">
+                        <h1 class="font-heading text-h3 text-primary">5ivers Payslip</h1>
                         <p class="text-body-sm text-on-surface-variant">Period ending {{ $payslip->payrollRun->period_end->format('d M Y') }}</p>
                     </div>
                     <div class="text-right text-body-sm text-on-surface-variant">
@@ -23,9 +24,10 @@
                         <p class="text-on-surface-variant">{{ $payslip->employee->department?->name }}</p>
                     </div>
                     <div>
-                        <p class="form-label mb-2">Pay Grade</p>
-                        <p class="font-medium">{{ $payslip->payGrade?->name ?? '—' }}</p>
-                        <p class="text-on-surface-variant">{{ $payslip->payGrade ? number_format($payslip->payGrade->base_salary, 2).' '.$payslip->payGrade->currency : '' }}</p>
+                        <p class="form-label mb-2">Pay Amount</p>
+                        {{-- <p class="font-medium">{{ $payslip->payGrade?->name ?? '—' }}</p> --}}
+                        {{-- <p class="text-on-surface-variant">{{ $payslip->payGrade ? number_format($payslip->payGrade->base_salary, 2).' '.$payslip->payGrade->currency : '' }}</p> --}}
+                        <p class="text-on-surface-variant">{{ number_format($payslip->net_pay, 2) }}</p>
                     </div>
                 </div>
 
