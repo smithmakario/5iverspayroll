@@ -6,7 +6,7 @@
             <div class="card card-body">
                 <form method="POST" action="{{ route('earning-types.store') }}" class="space-y-6">
                     @csrf
-                    @include('earning-types._form')
+                    @include('earning-types._form', ['earningType' => null])
                     <div class="flex gap-3">
                         <button type="submit" class="btn-primary">Create</button>
                         <a href="{{ route('earning-types.index') }}" class="btn-secondary">Cancel</a>

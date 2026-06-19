@@ -105,6 +105,34 @@
         @apply px-4 py-3 text-left text-label-caps uppercase text-on-surface-variant;
     }
 
+    .table-list th.sortable-th {
+        @apply p-0;
+    }
+
+    .sortable-th-link {
+        @apply inline-flex items-center gap-1.5 px-4 py-3 w-full text-left text-label-caps uppercase no-underline transition-colors duration-200 text-on-surface-variant hover:text-primary;
+    }
+
+    .sortable-th-link.is-active {
+        @apply text-primary font-semibold;
+    }
+
+    .sortable-th-icon {
+        @apply w-4 h-4 shrink-0 inline-block;
+    }
+
+    .sortable-th-link.is-active .sortable-th-icon {
+        @apply text-primary;
+    }
+
+    .sortable-th-link:not(.is-active) .sortable-th-icon {
+        @apply opacity-0 transition-opacity duration-200;
+    }
+
+    .sortable-th-link:not(.is-active):hover .sortable-th-icon {
+        @apply opacity-50;
+    }
+
     .table-list tbody tr:nth-child(even) {
         @apply bg-slate-50;
     }

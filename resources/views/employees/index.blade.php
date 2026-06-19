@@ -58,14 +58,14 @@
                 <table class="table-list">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Department</th>
-                            <th>Location</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Portal</th>
-                            <th>Hire Date</th>
+                            <x-sortable-th column="employee_number" label="ID" :sort="$sort" :direction="$direction" />
+                            <x-sortable-th column="name" label="Name" :sort="$sort" :direction="$direction" />
+                            <x-sortable-th column="department" label="Department" :sort="$sort" :direction="$direction" />
+                            <x-sortable-th column="location" label="Location" :sort="$sort" :direction="$direction" />
+                            <x-sortable-th column="employment_type" label="Type" :sort="$sort" :direction="$direction" />
+                            <x-sortable-th column="employment_status" label="Status" :sort="$sort" :direction="$direction" />
+                            <x-sortable-th column="portal" label="Portal" :sort="$sort" :direction="$direction" />
+                            <x-sortable-th column="hire_date" label="Hire Date" :sort="$sort" :direction="$direction" />
                             <th></th>
                         </tr>
                     </thead>

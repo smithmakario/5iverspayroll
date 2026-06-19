@@ -27,8 +27,24 @@ class EmployeeController extends Controller
 
     public function index(Request $request): View
     {
-        $query = Employee::with(['department', 'location', 'payGrade', 'user'])
-            ->orderBy('last_name');
+        $allowedSorts = [
+            'employee_number',
+            'name',
+            'department',
+            'location',
+            'employment_type',
+            'employment_status',
+            'portal',
+            'hire_date',
+        ];
+
+        $sort = in_array($request->string('sort')->toString(), $allowedSorts, true)
+            ? $request->string('sort')->toString()
+            : 'name';
+
+        $direction = $request->string('direction')->lower()->toString() === 'desc' ? 'desc' : 'asc';
+
+        $query = Employee::with(['department', 'location', 'payGrade', 'user']);
 
         if ($request->filled('department_id')) {
             $query->where('department_id', $request->department_id);
@@ -56,6 +72,23 @@ class EmployeeController extends Controller
             });
         }
 
+        match ($sort) {
+            'employee_number' => $query->orderBy('employee_number', $direction),
+            'name' => $query->orderBy('last_name', $direction)->orderBy('first_name', $direction),
+            'department' => $query->orderBy(
+                Department::select('name')->whereColumn('departments.id', 'employees.department_id'),
+                $direction
+            ),
+            'location' => $query->orderBy(
+                Location::select('name')->whereColumn('locations.id', 'employees.location_id'),
+                $direction
+            ),
+            'employment_type' => $query->orderBy('employment_type', $direction),
+            'employment_status' => $query->orderBy('employment_status', $direction),
+            'portal' => $query->orderBy('profile_confirmed_at', $direction),
+            'hire_date' => $query->orderBy('hire_date', $direction),
+        };
+
         $employees = $query->paginate(20)->withQueryString();
 
         $departments = Department::where('is_active', true)->orderBy('name')->get();
@@ -69,6 +102,8 @@ class EmployeeController extends Controller
             'locations',
             'employmentTypes',
             'employmentStatuses',
+            'sort',
+            'direction',
         ));
     }
 
