@@ -33,12 +33,12 @@ class EmployeeEarningController extends Controller
         return back()->with('success', 'Bonus/commission assigned to employee.');
     }
 
-    public function destroy(Employee $employee, EmployeeEarning $earning): RedirectResponse
+    public function destroy(Employee $employee, EmployeeEarning $employeeEarning): RedirectResponse
     {
-        abort_unless($earning->employee_id === $employee->id, 404);
+        abort_unless($employeeEarning->employee_id === $employee->id, 404);
 
-        $earning->delete();
-        PayrollAuditLogger::log('employee_earning.removed', $employee, ['earning_id' => $earning->id]);
+        $employeeEarning->delete();
+        PayrollAuditLogger::log('employee_earning.removed', $employee, ['earning_id' => $employeeEarning->id]);
 
         return back()->with('success', 'Bonus/commission removed.');
     }

@@ -62,8 +62,8 @@
                                 <td>{{ $deduction->effective_from?->format('d M Y') ?? '—' }} – {{ $deduction->effective_to?->format('d M Y') ?? '—' }}</td>
                                 <td><x-status-badge :status="$deduction->is_active ? 'active' : 'terminated'" /></td>
                                 <td class="text-right">
-                                    <form method="POST" action="{{ route('employees.deductions.destroy', [$employee, $deduction]) }}" class="inline" onsubmit="return confirm('Remove this deduction?')">
-                                        @csrf @method('DELETE')
+                                    <form method="POST" action="{{ route('employees.deductions.destroy', ['employee' => $employee, 'employee_deduction' => $deduction]) }}" class="inline" onsubmit="return confirm('Remove this deduction?')">
+                                        @csrf
                                         <button class="text-error hover:underline">Remove</button>
                                     </form>
                                 </td>

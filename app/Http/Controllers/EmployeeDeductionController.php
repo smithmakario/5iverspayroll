@@ -33,12 +33,12 @@ class EmployeeDeductionController extends Controller
         return back()->with('success', 'Deduction assigned to employee.');
     }
 
-    public function destroy(Employee $employee, EmployeeDeduction $deduction): RedirectResponse
+    public function destroy(Employee $employee, EmployeeDeduction $employeeDeduction): RedirectResponse
     {
-        abort_unless($deduction->employee_id === $employee->id, 404);
+        abort_unless($employeeDeduction->employee_id === $employee->id, 404);
 
-        $deduction->delete();
-        PayrollAuditLogger::log('employee_deduction.removed', $employee, ['deduction_id' => $deduction->id]);
+        $employeeDeduction->delete();
+        PayrollAuditLogger::log('employee_deduction.removed', $employee, ['deduction_id' => $employeeDeduction->id]);
 
         return back()->with('success', 'Deduction removed.');
     }
