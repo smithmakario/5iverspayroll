@@ -70,8 +70,9 @@
                                 <td>{{ $earning->effective_from?->format('d M Y') ?? '—' }} – {{ $earning->effective_to?->format('d M Y') ?? '—' }}</td>
                                 <td><x-status-badge :status="$earning->is_active ? 'active' : 'terminated'" /></td>
                                 <td class="text-right">
-                                    <form method="POST" action="{{ route('employees.earnings.destroy', ['employee' => $employee, 'employee_earning' => $earning]) }}" class="inline" onsubmit="return confirm('Remove this earning?')">
+                                    <form method="POST" action="{{ route('employees.earnings.destroy', $employee) }}" class="inline" onsubmit="return confirm('Remove this earning?')">
                                         @csrf
+                                        <input type="hidden" name="earning_id" value="{{ $earning->id }}">
                                         <button class="text-error hover:underline">Remove</button>
                                     </form>
                                 </td>

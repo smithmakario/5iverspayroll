@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEmployeeDeductionRequest;
 use App\Models\DeductionType;
 use App\Models\Employee;
-use App\Models\EmployeeDeduction;
 use App\Services\PayrollAuditLogger;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class EmployeeDeductionController extends Controller
@@ -33,12 +33,17 @@ class EmployeeDeductionController extends Controller
         return back()->with('success', 'Deduction assigned to employee.');
     }
 
-    public function destroy(Employee $employee, EmployeeDeduction $employeeDeduction): RedirectResponse
+    public function destroy(Request $request, Employee $employee): RedirectResponse
     {
-        abort_unless($employeeDeduction->employee_id === $employee->id, 404);
+        $validated = $request->validate([
+            'deduction_id' => ['required', 'integer'],
+        ]);
 
-        $employeeDeduction->delete();
-        PayrollAuditLogger::log('employee_deduction.removed', $employee, ['deduction_id' => $employeeDeduction->id]);
+        $deduction = $employee->deductions()->findOrFail($validated['deduction_id']);
+        $deductionId = $deduction->id;
+
+        $deduction->delete();
+        PayrollAuditLogger::log('employee_deduction.removed', $employee, ['deduction_id' => $deductionId]);
 
         return back()->with('success', 'Deduction removed.');
     }

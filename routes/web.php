@@ -60,10 +60,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('locations', LocationController::class);
             Route::get('employees/{employee}/deductions', [EmployeeDeductionController::class, 'index'])->name('employees.deductions.index');
             Route::post('employees/{employee}/deductions', [EmployeeDeductionController::class, 'store'])->name('employees.deductions.store');
-            Route::post('employees/{employee}/deductions/{employee_deduction}/remove', [EmployeeDeductionController::class, 'destroy'])->name('employees.deductions.destroy');
+            Route::post('employees/{employee}/deductions/remove', [EmployeeDeductionController::class, 'destroy'])->name('employees.deductions.destroy');
             Route::get('employees/{employee}/earnings', [EmployeeEarningController::class, 'index'])->name('employees.earnings.index');
             Route::post('employees/{employee}/earnings', [EmployeeEarningController::class, 'store'])->name('employees.earnings.store');
-            Route::post('employees/{employee}/earnings/{employee_earning}/remove', [EmployeeEarningController::class, 'destroy'])->name('employees.earnings.destroy');
+            Route::post('employees/{employee}/earnings/remove', [EmployeeEarningController::class, 'destroy'])->name('employees.earnings.destroy');
         });
 
     // Guarantor confirmation — Admin only

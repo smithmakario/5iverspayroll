@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployeeEarningRequest;
 use App\Models\Employee;
-use App\Models\EmployeeEarning;
 use App\Models\EarningType;
 use App\Services\PayrollAuditLogger;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class EmployeeEarningController extends Controller
@@ -33,12 +33,17 @@ class EmployeeEarningController extends Controller
         return back()->with('success', 'Bonus/commission assigned to employee.');
     }
 
-    public function destroy(Employee $employee, EmployeeEarning $employeeEarning): RedirectResponse
+    public function destroy(Request $request, Employee $employee): RedirectResponse
     {
-        abort_unless($employeeEarning->employee_id === $employee->id, 404);
+        $validated = $request->validate([
+            'earning_id' => ['required', 'integer'],
+        ]);
 
-        $employeeEarning->delete();
-        PayrollAuditLogger::log('employee_earning.removed', $employee, ['earning_id' => $employeeEarning->id]);
+        $earning = $employee->earnings()->findOrFail($validated['earning_id']);
+        $earningId = $earning->id;
+
+        $earning->delete();
+        PayrollAuditLogger::log('employee_earning.removed', $employee, ['earning_id' => $earningId]);
 
         return back()->with('success', 'Bonus/commission removed.');
     }
